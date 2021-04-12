@@ -1,4 +1,4 @@
-package com.daru.kafka;
+package com.daru.kafka.consumers;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Properties;
 
 public class Consumer {
@@ -39,12 +38,13 @@ public class Consumer {
                 new KafkaConsumer<String, String>(properties);
 
         // subscribe consumer to topic
-        // collection.singleton is sub to onlu one topic
+        // collection.singleton is sub to only one topic
         // consumer.subscribe(Collections.singleton("first_topic"));
-        consumer.subscribe(Arrays.asList("first_topic"));
+        consumer.subscribe(Arrays.asList(topic));
 
 
         // poll for new data
+        // obv not good having while true but good enough for learning
         while (true){
             ConsumerRecords<String, String> records
                     = consumer.poll(Duration.ofMillis(100));

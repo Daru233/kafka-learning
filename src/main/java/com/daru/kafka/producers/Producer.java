@@ -1,4 +1,4 @@
-package com.daru.kafka;
+package com.daru.kafka.producers;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;

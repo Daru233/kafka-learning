@@ -1,4 +1,4 @@
-package com.daru.kafka;
+package com.daru.kafka.producers;
 
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-public class ProducerWithKeys {
+public class ProducerWithCallback {
 
     public static void main(String[] args) {
 
-        Logger LOGGER = LoggerFactory.getLogger(ProducerWithKeys.class);
+        Logger LOGGER = LoggerFactory.getLogger(ProducerWithCallback.class);
 
         String bootstrapServer =  "127.0.0.1:9092";
 
@@ -29,20 +29,11 @@ public class ProducerWithKeys {
 
 
         // just to send a bunch of data
-        for (int i = 0; i < 50; i++) {
-
-            String topic = "first_topic";
-            String value = "hello_world " + Integer.toString(i);
-            String key = "id_" + Integer.toString(i);
+        for (int i = 0; i < 10; i++) {
 
             // create producer record
             ProducerRecord<String, String> record =
-                    new ProducerRecord<String, String>(topic, key, value);
-
-            // check logs,
-            // by providing a key,
-            // it is GUARANTEED that the same key ALWAYS goes to the same partition
-            LOGGER.info("Key: " + key);
+                    new ProducerRecord<String, String>("first_topic", "hello_world " + Integer.toString(i));
 
             // send data - asynchronous
             producer.send(record, new Callback() {
