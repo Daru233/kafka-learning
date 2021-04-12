@@ -25,35 +25,50 @@ public class ProducerWithKeys {
         // Key String, Value String
         KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
 
-        String topic = "first_topic";
-        String value = "hello world";
-        String key = "Key " + Integer.toString(2);
 
-        // create producer record
-        ProducerRecord<String, String> record =
-                new ProducerRecord<String, String>(topic, key, value);
 
-        // send data - asynchronous
-        producer.send(record, new Callback() {
-            @Override
-            public void onCompletion(RecordMetadata recordMetadata, Exception e) {
-                // executes every time a record is successfully sent or exception is thrown
-                if (e == null){
-                    // record was sent successfully
-                    LOGGER.info("Received new metadata: \n" +
-                            "Topic: " + recordMetadata.topic() + "\n" +
-                            "Partition: " + recordMetadata.partition() + "\n" +
-                            "Offset: " + recordMetadata.offset() + "\n" +
-                            "Timestamp: " + recordMetadata.timestamp());
-                } else {
-                    LOGGER.error("Error while producing: ", e);
+
+        // just to send a bunch of data
+        for (int i = 0; i < 50; i++) {
+
+            String topic = "first_topic";
+            String value = "hello_world " + Integer.toString(i);
+            String key = "id_" + Integer.toString(i);
+
+            // create producer record
+            ProducerRecord<String, String> record =
+                    new ProducerRecord<String, String>(topic, key, value);
+
+            // check logs,
+            // by providing a key,
+            // it is GUARANTEED that the same key ALWAYS goes to the same partition
+            LOGGER.info("Key: " + key);
+
+            // send data - asynchronous
+            producer.send(record, new Callback() {
+                @Override
+                public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+                    // executes every time a record is successfully sent or exception is thrown
+                    if (e == null){
+                        // record was sent successfully
+                        LOGGER.info("Received new metadata: \n" +
+                                "Topic: " + recordMetadata.topic() + "\n" +
+                                "Partition: " + recordMetadata.partition() + "\n" +
+                                "Offset: " + recordMetadata.offset() + "\n" +
+                                "Timestamp: " + recordMetadata.timestamp());
+                    } else {
+                        LOGGER.error("Error while producing: ", e);
+                    }
+
                 }
+            });
 
-            }
-        });
+        }
+
+
 
         // flush data
-//        producer.flush();
+        producer.flush();
         // flush and close producer
         producer.close();
 
